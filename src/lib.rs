@@ -3,8 +3,10 @@
 pub fn approx(x:f64, y:f64, xtol:f64)->bool { (x-y).abs() < xtol }
 
 pub fn g_search(f1:impl Fn(f64)->f64,mut a0:f64,mut b0:f64,xtol:f64)->f64 {
-    0.0
+    1.0
 }
+
+
 
 pub mod roots {
 
@@ -25,6 +27,8 @@ pub mod roots {
         }
         Err("No soln")
     }
+
+
 
 }
 
