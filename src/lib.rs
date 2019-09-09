@@ -46,6 +46,10 @@ pub mod roots {
 
         
     }
+
+    #[test] fn g_search_test(){
+        assert!(g_search(|x| (x - 3.0).powf(2.0) + 5.0, 1.0, 5.0, 1e-7) == 1.0);
+    }
 }
 
 
