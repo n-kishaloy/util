@@ -2,8 +2,20 @@
 
 pub fn approx(x:f64, y:f64, xtol:f64)->bool { (x-y).abs() < xtol }
 
-pub fn g_search(f1:impl Fn(f64)->f64,mut a0:f64,mut b0:f64,xtol:f64)->f64 {
-    1.0
+pub fn g_search(f:impl Fn(f64)->f64,mut a:f64,mut b:f64,xtol:f64)
+        ->Result<(f64,f64), &'static str> {
+
+    const GR:f64= 0.6180339887498948482045868343656381177203091798057628621354;
+    let mut f1  = f64::min(a,b); b = f64::max(a,b); a = f1;
+
+    let (mut x1, mut x2) = (b - GR*(b-a), a + GR*(b-a));
+    f1 = f(x1); let mut f2 = f(x2);
+
+    for _ in 1..(((xtol/(b-a)).log2()/GR.log2()) as i64) {
+        if f1 < f2 { b = x2; x2 = x1; f2 = f1; x1 = b - GR*(b-a); f1 = f(x1); } 
+        else { a = x1; x1 = x2; f1 = f2; x2 = a + GR*(b-a); f2 = f(x2); }
+    }
+    Ok(((x1+x2)/2.0, (f1+f2)/2.0))
 }
 
 
@@ -48,7 +60,8 @@ pub mod roots {
     }
 
     #[test] fn g_search_test(){
-        assert!(g_search(|x| (x - 3.0).powf(2.0) + 5.0, 1.0, 5.0, 1e-7) == 1.0);
+        assert!(g_search(|x| (x - 4.5).powf(2.0) + 5.0, 1.0, 5.0, 1e-15) 
+        == Ok((4.5000000210734238947907215, 5.0)) );
     }
 }
 
